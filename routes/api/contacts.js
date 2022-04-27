@@ -1,16 +1,17 @@
 const express = require('express')
-const contactModel = require('../../models/contacts')
-const { schemaCreateContact, schemaBody } = require('./contacts-validation-schemes')
+const contactRepository = require('../../repository/contacts')
+const { schemaCreateContact, schemaBody, schemaFavorites } = require('./contacts-validation-schemes')
 const { validateBody } = require('../../middlewares/validation')
 const router = express.Router()
 
 router.get('/', async (req, res, next) => {
-  const contacts = await contactModel.listContacts()
-  res.json({ status: 'success', code: '200', payload: { contacts } })
+  const contacts = await contactRepository.listContacts()
+  return res.json({ status: 'success', code: '200', payload: { contacts } })
 })
 
 router.get('/:contactId', async (req, res, next) => {
-  const contact = await contactModel.getContactById(req.params.contactId)
+  const contact = await contactRepository.getContactById(req.params.contactId)
+  console.log(contact);
   if (contact) {
     return res.json({ status: 'success', code: '200', payload: { contact } })
   }
@@ -18,12 +19,12 @@ router.get('/:contactId', async (req, res, next) => {
 })
 
 router.post('/', validateBody(schemaCreateContact), async (req, res, next) => {
-  const contact = await contactModel.addContact(req.body)
-  res.status(201).json({ status: 'success', code: '201', payload: { contact } })
+  const contact = await contactRepository.addContact(req.body)
+  return res.status(201).json({ status: 'success', code: '201', payload: { contact } })
 })
 
 router.delete('/:contactId', async (req, res, next) => {
-  const contact = await contactModel.removeContact(req.params.contactId)
+  const contact = await contactRepository.removeContact(req.params.contactId)
   if (contact) {
     return res.json({ status: 'success', code: '200', payload: { contact } })
   }
@@ -31,12 +32,22 @@ router.delete('/:contactId', async (req, res, next) => {
 })
 
 router.put('/:contactId', validateBody(schemaBody), async (req, res, next) => {
-  const contact = await contactModel.updateContact(req.params.contactId, req.body)
+  const contact = await contactRepository.updateContact(req.params.contactId, req.body)
   if (contact) {
     return res.json({ status: 'success', code: '200', payload: { contact } })
   }
   return res.status(404).json({ status: 'error', code: '404', message: 'Not found' })
 
 })
+
+router.patch('/:contactId/favorites', validateBody(schemaFavorites), async (req, res, next) => {
+  const contact = await contactRepository.updateContact(req.params.contactId, req.body)
+  if (contact) {
+    return res.json({ status: 'success', code: '200', payload: { contact } })
+  }
+  return res.status(404).json({ status: 'error', code: '404', message: 'Not found' })
+
+})
+
 
 module.exports = router
