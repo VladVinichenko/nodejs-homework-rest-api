@@ -19,6 +19,11 @@ const schemaBody = Joi.object({
   phone: Joi.required()
     .messages({ 'any.required': 'missing required name field' }),
   email: Joi.required().messages({ 'any.required': 'missing field' }),
+  favorite: Joi.boolean()
 })
 
-module.exports = { schemaCreateContact, schemaBody }
+const schemaFavorites = Joi.object({
+  favorite: Joi.boolean().required().messages({ 'any.required': 'missing field favorite' }),
+})
+
+module.exports = { schemaCreateContact, schemaBody, schemaFavorites }
