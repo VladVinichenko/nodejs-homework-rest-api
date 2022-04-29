@@ -2,41 +2,31 @@ const express = require('express')
 const contactRepository = require('../../repository/contacts')
 const { HTTP_STATUS_CODE } = require('../../libs/constants.js')
 const { HTTP_STATUS } = require('../../libs/messages')
+const ContactService = require('../../services/contacts')
 
-const listContacts = async (req, res, next) => {
-  const contacts = await contactRepository.listContacts()
-  return res.json({ status: 'success', code: HTTP_STATUS_CODE.OK, payload: { contacts } })
+const listContacts = async (req, res) => {
+  const contacts = await ContactService.getAll(req.query, req.user)
+  return res.json({ status: 'success', code: HTTP_STATUS_CODE.OK, payload: { ...contacts } })
 }
 
-const getContact = async (req, res, next) => {
-  const contact = await contactRepository.getContactById(req.params.contactId)
-  console.log(contact);
-  if (contact) {
-    return res.json({ status: 'success', code: HTTP_STATUS_CODE.OK, payload: { contact } })
-  }
-  return res.status(HTTP_STATUS_CODE.NOT_FOUND).json({ status: 'error', code: HTTP_STATUS_CODE.NOT_FOUND, message: HTTP_STATUS.NOT_FOUND })
+const getContact = async (req, res) => {
+  const contact = await ContactService.getById(req.params.contactId, req.user)
+  return res.json({ status: 'success', code: HTTP_STATUS_CODE.OK, payload: { contact } })
 }
 
-const addContact = async (req, res, next) => {
-  const contact = await contactRepository.addContact(req.body)
+const addContact = async (req, res) => {
+  const contact = await ContactService.create(req.body, req.user)
   return res.status(HTTP_STATUS_CODE.CREATED).json({ status: 'success', code: HTTP_STATUS_CODE.CREATED, payload: { contact } })
 }
 
-const deleteContact = async (req, res, next) => {
-  const contact = await contactRepository.removeContact(req.params.contactId)
-  if (contact) {
-    return res.json({ status: 'success', code: HTTP_STATUS_CODE.OK, payload: { contact } })
-  }
-  return res.status(HTTP_STATUS_CODE.NOT_FOUND).json({ status: 'error', code: HTTP_STATUS_CODE.NOT_FOUND, message: HTTP_STATUS.NOT_FOUND })
+const deleteContact = async (req, res) => {
+  const contact = await ContactService.remove(req.params.contactId, req.user)
+  return res.json({ status: 'success', code: HTTP_STATUS_CODE.OK, payload: { contact } })
 }
 
-const updateContact = async (req, res, next) => {
-  const contact = await contactRepository.updateContact(req.params.contactId, req.body)
-  if (contact) {
-    return res.json({ status: 'success', code: HTTP_STATUS_CODE.OK, payload: { contact } })
-  }
-  return res.status(HTTP_STATUS_CODE.NOT_FOUND).json({ status: 'error', code: HTTP_STATUS_CODE.NOT_FOUND, message: HTTP_STATUS.NOT_FOUND })
-
+const updateContact = async (req, res) => {
+  const contact = await ContactService.update(req.params.contactId, req.body, req.user)
+  return res.json({ status: 'success', code: HTTP_STATUS_CODE.OK, payload: { contact } })
 }
 
 module.exports = { listContacts, getContact, addContact, deleteContact, updateContact }
