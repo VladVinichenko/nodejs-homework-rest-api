@@ -4,18 +4,19 @@ const { validateBody } = require('../../../middlewares/validation')
 const router = express.Router()
 const { listContacts, getContact, addContact, deleteContact, updateContact } = require('../../../controllers/contacts')
 const guard = require('../../../middlewares/guard')
+const { wrapper: wrapperError } = require('../../../middlewares/error-handler')
 
-router.get('/', guard, listContacts)
+router.get('/', guard, wrapperError(listContacts))
 
-router.get('/:contactId', guard, getContact)
+router.get('/:contactId', guard, wrapperError(getContact))
 
-router.post('/', guard, validateBody(schemaCreateContact), addContact)
+router.post('/', guard, validateBody(schemaCreateContact), wrapperError(addContact))
 
-router.delete('/:contactId', guard, deleteContact)
+router.delete('/:contactId', guard, wrapperError(deleteContact))
 
-router.put('/:contactId', guard, validateBody(schemaBody), updateContact)
+router.put('/:contactId', guard, validateBody(schemaBody), wrapperError(updateContact))
 
-router.patch('/:contactId/favorites', guard, validateBody(schemaFavorites), updateContact)
+router.patch('/:contactId/favorites', guard, validateBody(schemaFavorites), wrapperError(updateContact))
 
 
 module.exports = router
