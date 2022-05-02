@@ -15,7 +15,7 @@ class ContactService {
     if (sortByDesc) {
       sortCriteria = { [sortByDesc]: -1 }
     }
-    // name|phone|email => 'name phone email'
+    // name|phone|email|favorite => 'name phone email favorite'
     if (filter) {
       select = filter.split('|').join(' ')
     }

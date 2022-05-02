@@ -29,4 +29,7 @@ const updateContact = async (req, res) => {
   return res.json({ status: 'success', code: HTTP_STATUS_CODE.OK, payload: { contact } })
 }
 
-module.exports = { listContacts, getContact, addContact, deleteContact, updateContact }
+
+module.exports = {
+  listContacts, getContact, addContact, deleteContact, updateContact,
+}

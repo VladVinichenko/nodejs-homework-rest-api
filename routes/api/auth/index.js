@@ -3,10 +3,10 @@ const { registration, login, logout } = require('../../../controllers/auth')
 const { wrapper: wrapperError } = require('../../../middlewares/error-handler')
 const router = express.Router()
 const guard = require('../../../middlewares/guard')
+const limiter = require('../../../middlewares/rate-limit')
 
 
-
-router.post('/registration', wrapperError(registration))
+router.post('/registration', limiter(15, 2), wrapperError(registration))
 
 router.post('/login', wrapperError(login))
 
