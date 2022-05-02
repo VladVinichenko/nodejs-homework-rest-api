@@ -1,5 +1,5 @@
 const Contact = require('../models/contact')
-
+const { Types } = require('mongoose')
 
 const listContacts = async ({ limit, skip, sortCriteria, select }, user) => {
   const total = await Contact.countDocuments({ owner: user._id })
@@ -34,7 +34,6 @@ const updateContact = async (contactId, body, user) => {
   )
   return result
 }
-
 
 
 module.exports = {

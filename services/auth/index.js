@@ -17,6 +17,7 @@ class AuthService {
       name: newUser.name,
       email: newUser.email,
       subscription: newUser.subscription,
+      avatarURL: newUser.avatar,
     }
   }
 
