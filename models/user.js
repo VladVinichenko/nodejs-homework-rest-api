@@ -3,6 +3,7 @@ const { Schema, model } = mongoose;
 const { Subscription } = require('../libs/constants')
 const bcrypt = require('bcryptjs')
 const gravatar = require('gravatar')
+const { randomUUID } = require('crypto')
 
 const userSchema = new Schema({
   name: { type: String, default: 'Guest' },
@@ -23,7 +24,8 @@ const userSchema = new Schema({
       return gravatar.url(this.email, { s: '250' }, true)
     }
   },
-
+  isVerify: { type: Boolean, default: false },
+  verifyEmailToken: { type: String, default: randomUUID() },
   token: { type: String, default: null },
 }, { versionKey: false, timestamps: true, toObject: { virtuals: true }, },
 
